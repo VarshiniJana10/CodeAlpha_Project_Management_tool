@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>QuantumBoard · Precision workflow. Quantum efficiency.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="space-gradient"></div>
+
+  <div class="app-shell">
+    <!-- TOP BAR -->
+    <header class="topbar glass-xl">
+      <div class="topbar-left">
+        <!-- Quantum Blue Logo -->
+        <div class="brand-orb" style="
+          background:
+              radial-gradient(circle at 20% 20%, #ffffffaa, transparent 60%),
+              radial-gradient(circle at 50% 50%, rgba(96,165,250,0.55), transparent 70%),
+              conic-gradient(from 180deg, #3b82f6, #a855f7, #3b82f6);
+          box-shadow: 0 0 40px rgba(59,130,246,0.8);
+        ">
+          <div class="brand-core" style="
+            background: rgba(15,23,42,0.85);
+            box-shadow: inset 0 0 18px rgba(96,165,250,0.5);
+            border: 1px solid rgba(148,163,184,0.5);
+          "></div>
+        </div>
+
+        <div class="brand-copy">
+          <span class="brand-title">QuantumBoard</span>
+          <span class="brand-sub">Precision workflow. Quantum efficiency.</span>
+        </div>
+      </div>
+
+      <div class="topbar-center">
+        <div class="chip subtle" id="connectionChip">
+          <span class="dot-online"></span>
+          Realtime board
+        </div>
+        <div class="chip subtle">
+          Today · <span id="todayLabel"></span>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <button class="chip subtle" id="themeToggle">🌙 Deep space</button>
+        <button class="chip subtle" id="exportBtn">⬇ Export</button>
+
+        <div class="user-pill">
+          <span class="user-avatar">U</span>
+          <span class="user-name">You</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- SIDEBAR -->
+      <aside class="sidebar glass-md">
+        <div class="sidebar-header">
+          <div>
+            <div class="label-sm">Workspace</div>
+            <div class="label-xs muted">You · <span>3</span> active projects</div>
+          </div>
+          <button class="chip primary small">＋ New</button>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="section-title">Projects</div>
+          <ul class="nav-list" id="projectList"></ul>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="section-title">Shortcuts</div>
+          <ul class="nav-list">
+            <li class="nav-item">
+              <span>Inbox</span>
+              <span class="pill-count">7</span>
+            </li>
+            <li class="nav-item">
+              <span>My tasks</span>
+              <span class="pill-count">14</span>
+            </li>
+            <li class="nav-item">
+              <span>Calendar</span>
+              <span class="pill-count">Week</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-footer">
+          QuantumBoard — built as part of<br />
+          <span>CodeAlpha Internship.</span>
+        </div>
+      </aside>
+
+      <!-- MAIN BOARD -->
+      <section class="board-region">
+        <div class="board-header glass-md">
+          <div class="board-title">
+            <h1>Sprint board</h1>
+            <span id="currentProjectName" class="label-xs muted"></span>
+          </div>
+
+          <div class="board-controls">
+            <div class="select-wrap">
+              <select id="projectSelect"></select>
+            </div>
+
+            <div class="search-wrap">
+              <span>🔍</span>
+              <input
+                id="searchInput"
+                type="text"
+                placeholder="Search tasks, assignees, labels..."
+              />
+            </div>
+
+            <button class="chip subtle" id="filterToday">
+              ⏰ Due today
+            </button>
+
+            <button class="chip primary" id="newTaskBtn">
+              ＋ New task
+            </button>
+          </div>
+        </div>
+
+        <section class="glass-xl board-shell">
+          <div class="board-meta">
+            <span>Total tasks: <strong id="taskCount">0</strong></span>
+            <span>
+              Overdue:
+              <strong id="overdueCount" class="danger">0</strong> · Completed:
+              <strong id="doneCount" class="success">0</strong>
+            </span>
+          </div>
+
+          <div class="columns-wrap" id="board"></div>
+        </section>
+      </section>
+
+      <!-- ACTIVITY PANEL -->
+      <aside class="activity-panel glass-md">
+        <div class="activity-header">
+          <div>
+            <div class="label-sm">Activity</div>
+            <div class="label-xs muted">Last updates</div>
+          </div>
+          <button class="chip subtle small" id="clearActivityBtn">Clear</button>
+        </div>
+        <ul class="activity-list" id="activityList"></ul>
+      </aside>
+    </main>
+  </div>
+
+  <!-- TASK MODAL -->
+  <div class="modal-backdrop" id="taskModalBackdrop">
+    <div class="modal glass-lg">
+      <div class="modal-header">
+        <div>
+          <div class="label-sm">New task</div>
+          <div class="label-xs muted">
+            Create a task on QuantumBoard
+          </div>
+        </div>
+        <button class="modal-close" id="closeModalBtn">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <label class="field-label">Title</label>
+        <input id="taskTitleInput" class="field" placeholder="Design auth screen" />
+
+        <label class="field-label">Description</label>
+        <textarea id="taskDescriptionInput" class="field"
+          placeholder="Short summary..."
+        ></textarea>
+
+        <div class="field-grid">
+          <div>
+            <label class="field-label">Assignee</label>
+            <input id="taskAssigneeInput" class="field" placeholder="e.g. You" />
+          </div>
+          <div>
+            <label class="field-label">Due date</label>
+            <input type="date" id="taskDueInput" class="field" />
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div>
+            <label class="field-label">Label</label>
+            <select id="taskLabelInput" class="field">
+              <option value="none">None</option>
+              <option value="high">High Priority</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+              <option value="bug">Bug</option>
+              <option value="feature">Feature</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="field-label">Column</label>
+            <select id="taskColumnInput" class="field">
+              <option value="todo">To Do</option>
+              <option value="inprogress">In Progress</option>
+              <option value="review">Review</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+        </div>
+
+        <label class="field-label">
+          Checklist items <span class="label-xs muted">(comma separated)</span>
+        </label>
+        <input id="taskSubtaskInput" class="field"
+          placeholder="UI layout, API wiring"
+        />
+
+        <label class="field-label">
+          First comment <span class="label-xs muted">(optional)</span>
+        </label>
+        <textarea id="taskCommentInput" class="field"
+          placeholder="Any context or links..."
+        ></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button class="chip subtle" id="cancelModalBtn">Cancel</button>
+        <button class="chip primary" id="saveTaskBtn">Save task</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
